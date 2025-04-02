@@ -15,8 +15,6 @@ keypoints:
 
 More detailed instructions on streaming and downloading simulation files can be found in the [Analysis Tutorial](https://eic.github.io/tutorial-analysis/)
 
-Let's start by downloading our files. We will look at two different files from the March 2025 campaign: a low Q2 and a high Q2 Neutral Current DIS file.
-
 ## Access Simulation from Jefferson Lab xrootd
 
 The preferred method for browsing the simulation output is to use xrootd from within the eic-shell. To browse the directory structure and exit, one can run the commands:
@@ -38,7 +36,7 @@ exit
 
 ## Download files for the next step!
 
-We will need a file to analyse going forward, if you have not done so, download a file now!
+Let's start by downloading our files. We will look at two different files from the March 2025 campaign: a low Q2 and a high Q2 Neutral Current DIS file.
 
 Grab files using -
 ```console
@@ -52,5 +50,47 @@ Note that the ./ at the end is the target location to copy to. Change this as de
 ```console
 root -l pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.tree.edm4eic.root
 TBrowser b
-events->Draw("InclusiveKinematicsTruth.x")
 ```
+From here you you can click around the browser to inspect the basic features of the distributions - look for branches titled "InclusiveKinematics*".
+
+It may be inconvenient to do everything through the `TBrowser' if you want to compare the distributions, look at multiple files, or to save the histograms. Using your preferred text editor, create a file with the name `PlotDistributions.C', and paste the following code:
+```console
+void PlotDistributions(TString filename){
+  
+  std::vector<TString> recon_method = {"Truth", "Electron", "JB", "DA", "Sigma", "ESigma"};
+
+  // Open the file and retrieve the chain
+  auto tree = new TChain("events");
+  tree->Add(filename);
+  
+  for (auto method : recon_method){
+    
+    auto canvas = new TCanvas();
+    canvas->Divide(2,2);
+    
+    TString branch_name;
+    canvas->cd(1);
+    
+    // Draw a histogram for each variable as reconstructed by each method
+    branch_name = TString::Format("InclusiveKinematics%s.x",method.Data());
+    tree->Draw(branch_name);
+    canvas->cd(2);
+    branch_name = TString::Format("InclusiveKinematics%s.y",method.Data());
+    tree->Draw(branch_name);
+    canvas->cd(3);
+    branch_name = TString::Format("InclusiveKinematics%s.Q2",method.Data());
+    tree->Draw(branch_name);
+    canvas->cd(4);
+    branch_name = TString::Format("InclusiveKinematics%s.W",method.Data());
+    tree->Draw(branch_name);
+
+    branch_name = TString::Format("InclusiveKinematics%s.pdf",method.Data());
+    canvas->Print(branch_name); // Write the canvases to a pdf file
+  }
+}
+```
+You can then run this script as
+```console
+root -l PlotDistributions.C\(\"pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root\"\)
+```
+replacing the file name with the name of the file that you want to plot.
