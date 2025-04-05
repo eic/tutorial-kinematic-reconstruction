@@ -21,24 +21,29 @@ The preferred method for browsing the simulation output is to use xrootd from wi
 ```console
 ./eic-shell
 xrdfs root://dtn-eic.jlab.org
-ls /volatile/eic/EPIC/RECO/25.03.1
+ls /volatile/eic/EPIC/RECO/
 exit
 ```
 Once you've located your desired file, you can copy it to your local system using the `xrdcp` command:
 ```console
 ./eic-shell
-xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/25.03.1/path-to-file .
+xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/path-to-file ./
 exit
 ```
 
-> Note: For simulation campaigns before 2025, the destination is /work/eic2/EPIC rather than /volatile/eic/EPIC
+> Note: For simulation campaigns before January 2025, the destination is /work/eic2/EPIC rather than /volatile/eic/EPIC
 {: .callout}
 
 ## Download files for the next step!
 
 Let's start by downloading our files. We will look at two different files from the March 2025 campaign: a low Q2 and a high Q2 Neutral Current DIS file.
 
-Grab files using -
+The software used for EIC simulation/reconstruction/analysis is ever-changing, and an April 2025 update has resulted in some incompatibility between recent builds of `eic-shell` and simulation files produced before April 2025. We will be working with files from the March 2025 campaign, so to avoid this incompatibility we can start up an older version of `eic-shell` as 
+
+```console
+./eic-shell -v 25.03.0-stable
+```
+and we can grab our files using -
 ```console
 xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/25.03.1/epic_craterlake/DIS/NC/18x275/minQ2=1/pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.tree.edm4eic.root ./
 xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/25.03.1/epic_craterlake/DIS/NC/18x275/minQ2=1000/pythia8NCDIS_18x275_minQ2=1000_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.tree.edm4eic.root ./
@@ -47,13 +52,14 @@ Note that the ./ at the end is the target location to copy to. Change this as de
 
 ## Inspect the InclusiveKinematics branches
 
+Open the file in ROOT:
 ```console
 root -l pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.tree.edm4eic.root
 TBrowser b
 ```
 From here you you can click around the browser to inspect the basic features of the distributions - look for branches titled "InclusiveKinematics*".
 
-It may be inconvenient to do everything through the `TBrowser' if you want to compare the distributions, look at multiple files, or to save the histograms. Using your preferred text editor, create a file with the name `PlotDistributions.C', and paste the following code:
+It may be inconvenient to do everything through the `TBrowser` if you want to compare the distributions, look at multiple files, or to save the histograms. Using your preferred text editor, create a file with the name `PlotDistributions.C`, and paste the following code:
 ```console
 void PlotDistributions(TString filename){
   
@@ -94,3 +100,5 @@ You can then run this script as
 root -l PlotDistributions.C\(\"pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root\"\)
 ```
 replacing the file name with the name of the file that you want to plot.
+
+This script produces histograms of the distributions of the inclusive kinematic variables when reconstructed using several different reconstruction methods. Assuming that there are no major issues in the reconstruction, these distributions should look similar to the true distribution, with some smearing due to resolution effects.
