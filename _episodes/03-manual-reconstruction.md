@@ -18,7 +18,7 @@ It may be that you don't want to use the default reconstruction provided in the 
 
 We can do this by comparing our manual calculations to the results stored in the InclusiveKinematicsXX branches. Copy the script below into a file called `ManualReconstruction.C`
 
-```console
+```cpp
 // PODIO
 #include "podio/Frame.h"
 #include "podio/ROOTFrameReader.h"

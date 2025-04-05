@@ -15,19 +15,19 @@ keypoints:
 The collections contained in the simulation output often rely on data types made available by `edm4hep` and `edm4eic`. These are based on the podio EDM toolkit, which provides its own tools for reading in event data, though approaches using e.g. `TTreeReader` or `RDataFrame` are also possible. The data model contains functions that can make key information more accessible. Take the `edm4eic:ReconstructedParticle` type (see [here](https://eic.github.io/EDM4eic/classedm4eic_1_1_reconstructed_particle.html)) as an example:
 
 Go into a ROOT prompt (`root -l`) and create an `edm4eic::ReconstructedParticle` object
-```console
+```cpp
 #include <edm4eic/ReconstructedParticleCollection.h>;
 edm4eic::ReconstructedParticle rcp;
 ```
 For such an object you can access the tracks or clusters associated with the reconstructed particle as
-```console
+```cpp
 rcp.getTracks();
 rcp.getClusters()
 ```
 which would return a list of the associated tracks/clusters. As our `rcp` was just initialised, the lists are empty - for the objects in the simulation output this won't be the case.
 
 If you're not using data frames, you probably do your analysis in an event loop. An event loop with the `ROOTFrameReader` would look somthing like this
-```console
+```cpp
 #include "podio/Frame.h"
 #include "podio/ROOTFrameReader.h"
 #include "edm4eic/ReconstructedParticleCollection.h"
@@ -43,7 +43,7 @@ for (size_t i = 0; i < reader.getEntries("events"); i++) {
 ```
 
 Below is a full script to produce some resolution benchmark plots using the `InclusiveKinematicsXX` branches - copy it into a file called `BenchmarkReconstruction.C`
-```console
+```cpp
 // PODIO
 #include "podio/Frame.h"
 #include "podio/ROOTFrameReader.h"

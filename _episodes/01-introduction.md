@@ -60,7 +60,7 @@ TBrowser b
 From here you you can click around the browser to inspect the basic features of the distributions - look for branches titled "InclusiveKinematics*".
 
 It may be inconvenient to do everything through the `TBrowser` if you want to compare the distributions, look at multiple files, or to save the histograms. Using your preferred text editor, create a file with the name `PlotDistributions.C`, and paste the following code:
-```console
+```cpp
 void PlotDistributions(TString filename){
   
   std::vector<TString> recon_method = {"Truth", "Electron", "JB", "DA", "Sigma", "ESigma"};
