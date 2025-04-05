@@ -14,7 +14,7 @@ keypoints:
 
 The collections contained in the simulation output often rely on data types made available by `edm4hep` and `edm4eic`. These are based on the podio EDM toolkit, which provides its own tools for reading in event data, though approaches using e.g. `TTreeReader` or `RDataFrame` are also possible. The data model contains functions that can make key information more accessible. Take the `edm4eic:ReconstructedParticle` type (see [here](https://eic.github.io/EDM4eic/classedm4eic_1_1_reconstructed_particle.html)) as an example:
 
-go into a ROOT prompt (`root -l`) and create an `edm4eic::ReconstructedParticle` object
+Go into a ROOT prompt (`root -l`) and create an `edm4eic::ReconstructedParticle` object
 ```console
 #include <edm4eic/ReconstructedParticleCollection.h>;
 edm4eic::ReconstructedParticle rcp;
@@ -54,8 +54,6 @@ Below is a full script to produce some resolution benchmark plots using the `Inc
 template <class T>
 void BinLogX(T *h)
 {
-  // Usage: define histogram with xmin=log10(desiredXmin) and xmax=log10(desiredXmax)
-  // then gROOT->ProcessLine(".x BinLogX.C(h) to rebin the histogram
    TAxis *axis = h->GetXaxis();
    int bins = axis->GetNbins();
 
