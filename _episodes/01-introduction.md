@@ -50,14 +50,17 @@ xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/25.03.1/epic_craterlake/DI
 ```
 Note that the ./ at the end is the target location to copy to. Change this as desired.
 
+If you download a more recent file, the current build of `eic-shell` should work.
+
 ## Inspect the InclusiveKinematics branches
+
+From here you you can click around the browser to inspect the basic features of the distributions - look for branches titled "InclusiveKinematics*".
 
 Open the file in ROOT:
 ```console
 root -l pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.tree.edm4eic.root
 TBrowser b
 ```
-From here you you can click around the browser to inspect the basic features of the distributions - look for branches titled "InclusiveKinematics*".
 
 It may be inconvenient to do everything through the `TBrowser` if you want to compare the distributions, look at multiple files, or to save the histograms. Using your preferred text editor, create a file with the name `PlotDistributions.C`, and paste the following code:
 ```cpp

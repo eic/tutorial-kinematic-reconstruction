@@ -267,4 +267,25 @@ void BenchmarkReconstruction(std::string filename, bool bin_log=false) {
   cout << "Done!" << endl;
 }
 ```
-This script sets up the benchmark histograms, fills them in the event loop, and then draws them.
+This script sets up the benchmark histograms, fills them in the event loop, and then draws them. Here, the resolutions on the reconstructed kinematic variables are chosen as the benchmarks, both the 1-dimensional `(reco-true)/true` distribution, and also 2-dimensional plots vs inelasticity, y. For a good reconstruction method, the `(reco-true)/true` distribution is centred on zero, with small fluctuations.
+
+Run this script as 
+```console
+root -l BenchmarkReconstruction.C\(\"your_file.root\"\)
+```
+or as
+```console
+root -l BenchmarkReconstruction.C\(\"your_file.root\",true\)
+```
+to bin logarithmically in inelasticity. 
+
+You may wish to investigate how the resolutions change in a scenario more relavant to your analysis. A set of example cuts are provided in the script
+
+```console
+// Some example cuts
+bool cuts = true;
+cuts = cuts && (y_truth < 0.95);
+cuts = cuts && (y_truth > 0.01);
+cuts = cuts && (Q2_truth > 1);
+'''
+These can be replaced with whatever cuts are used in your analysis, or you could use them to select areas of the phase space that you wish to investigate.
