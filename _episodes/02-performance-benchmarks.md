@@ -16,8 +16,8 @@ The collections contained in the simulation output often rely on data types made
 
 Go into a ROOT prompt (`root -l`) and create an `edm4eic::ReconstructedParticle` object
 ```cpp
-#include <edm4eic/ReconstructedParticleCollection.h>;
-edm4eic::ReconstructedParticle rcp;
+#include <edm4eic/ReconstructedParticleCollection.h>
+edm4eic::ReconstructedParticle rcp
 ```
 For such an object you can access the tracks or clusters associated with the reconstructed particle as
 ```cpp
