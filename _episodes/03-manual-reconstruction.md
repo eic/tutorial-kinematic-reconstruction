@@ -232,7 +232,7 @@ As previously, you can run this script as
 ```console
 root -l ManualReconstruction.C\(\"your_file.root\"\)
 ```
-This produces plots comparing the manual calculations that were coded as
+This produces plots comparing the manual calculations to the values in the branches as `(branch_calc-manual_calc)/manual_calc`. The manual calculations were coded as
 ```cpp
 // electron method
 std::vector<float> calc_elec_method(float E, float theta, float pt_had, float sigma_h, float E_ebeam, float E_pbeam) {

@@ -179,7 +179,6 @@ void OptimiseReconstruction(std::string filename) {
     hResoQ2_esigma->Fill((Q2_esigma-Q2_truth)/Q2_truth);
 
     // Replace electron momentum with energy from calo cluster
-    // cout << eleCollection[0].getClusters().size() << endl;
     E = eleCollection[0].getClusters()[0].getEnergy();
 
     // Recalculate kinematics
@@ -326,3 +325,27 @@ std::vector<float> calc_esig_method(float E, float theta, float pt_had, float si
   return {x, y, Q2};
 }
 ```
+
+This script combines features of the scripts shown in the previous two sections. The plots that are produced when you run
+```console
+root -l OptimiseReconstruction.C\(\"your_file.root\"\)
+```
+show the `(reco-true)/true` distributions as before, with the reconstructed values coming from the manual calculations.
+
+The output of the basic electron-finder implemented in `EICrecon` is found in the `ScatteredElectronsEMinusPz` branch, which is accessed as 
+```cpp
+auto& eleCollection = event.get<edm4eic::ReconstructedParticleCollection>("ScatteredElectronsEMinusPz");
+```
+This returns a list of all particles in `ReconstructedParticles` that have matched tracks and ECAL clusters that pass an `E/p` cut, ordered by momentum. In this code, we take the first element (largest momentum) of the list - be aware that this assumption causes a drop in efficiency larger values of inelasticity.
+
+In this script we compare the quality of the reconstruction methods for two different scenarios: the first where the electron energy is found from the track momentum
+```cpp
+E = eleCollection[0].getEnergy();
+```
+and the second where the electron energy comes from the energy of the associated ECAL cluster
+```cpp
+E = eleCollection[0].getClusters()[0].getEnergy();
+```
+The benchmark plots for these two scenarios are overlaid on the same canvas. For the larger Q2 file, the two scenarios perform similarly (for March 2025 files considered here) but when looking at the low Q2 file, some differences become apparent. As one might expect, the Double Angle and JB methods are unaffected by this change, as they do not use the scattered electron energy in their calculation. However, the electron method, and to a lesser extent the Sigma methods see an improvement when using the energy value from the ECAL. The takeaway here is to check which approach gives you a better resolution for your analysis - at low Q2 it's generally better to rely on the calorimeters, as tracking momentum resolutions are worse at shallow angles.
+
+There are many ways in which the reconstruction of the hadronic final state, which has not been discussed much in this tutorial, could be improved. The reader is invited to look through the [current HFS reconstruction code](https://github.com/eic/EICrecon/blob/main/src/algorithms/reco/HadronicFinalState.cc), which constructs the HFS as the sum of particles in the `ReconstructedParticles` branch, excluding the scattered electron. Note that this code uses boosts to correct for the crossing angle at ePIC - this is something to keep in mind if you are reconstructing the HFS manually, as it strongly impacts the HFS inputs to the reconstruction methods (Pt and E-pz sum). Regardless of the difficulties, it is highly recommended to try your own HFS reconstruction, as there are many improvements to be offered by e.g. particle flow algorithms, or kinematic fitting of exclusive final states, that will hopefully be the subject of a future tutorial.
