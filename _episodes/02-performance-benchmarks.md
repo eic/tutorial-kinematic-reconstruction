@@ -21,7 +21,7 @@ edm4eic::ReconstructedParticle rcp
 ```
 For such an object you can access the tracks or clusters associated with the reconstructed particle as
 ```cpp
-rcp.getTracks();
+rcp.getTracks()
 rcp.getClusters()
 ```
 which would return a list of the associated tracks/clusters. As our `rcp` was just initialised, the lists are empty - for the objects in the simulation output this won't be the case.
@@ -279,7 +279,7 @@ root -l BenchmarkReconstruction.C\(\"your_file.root\",true\)
 ```
 to bin logarithmically in inelasticity. 
 
-You may wish to investigate how the resolutions change in a scenario more relavant to your analysis. A set of example cuts are provided in the script
+You may wish to investigate how the resolutions change in a scenario more relevant to your analysis. A set of example cuts are provided in the script
 
 ```console
 // Some example cuts
@@ -287,5 +287,5 @@ bool cuts = true;
 cuts = cuts && (y_truth < 0.95);
 cuts = cuts && (y_truth > 0.01);
 cuts = cuts && (Q2_truth > 1);
-'''
+```
 These can be replaced with whatever cuts are used in your analysis, or you could use them to select areas of the phase space that you wish to investigate.
