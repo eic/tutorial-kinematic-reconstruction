@@ -227,3 +227,57 @@ std::vector<float> calc_esig_method(float E, float theta, float pt_had, float si
   return {x, y, Q2};
 }
 ```
+
+As previously, you can run this script as
+'''console
+root -l ManualReconstruction.C\(\"your_file.root\"\)
+'''
+This produces plots comparing the manual calculations that were coded as
+'''cpp
+// electron method
+std::vector<float> calc_elec_method(float E, float theta, float pt_had, float sigma_h, float E_ebeam, float E_pbeam) {
+  float Q2  = 2.*E_ebeam*E*(1+TMath::Cos(theta));
+  float y = 1. - (E/E_ebeam)*TMath::Sin(theta/2)*TMath::Sin(theta/2);
+  float x = Q2/(4*E_ebeam*E_pbeam*y);
+  return {x, y, Q2};
+}
+
+// jb method
+std::vector<float> calc_jb_method(float E, float theta, float pt_had, float sigma_h, float E_ebeam, float E_pbeam) {
+  float y = sigma_h/(2*E_ebeam);
+  float Q2 = pt_had*pt_had / (1-y);
+  float x = Q2/(4*E_ebeam*E_pbeam*y);
+  return {x, y, Q2};
+}
+
+// float angle method
+std::vector<float> calc_da_method(float E, float theta, float pt_had, float sigma_h, float E_ebeam, float E_pbeam) {
+  float alpha_h = sigma_h/pt_had;
+  float alpha_e = TMath::Tan(theta/2);
+  float y = alpha_h / (alpha_e + alpha_h);
+  float Q2 = 4*E_ebeam*E_ebeam / (alpha_e * (alpha_h + alpha_e));
+  float x = Q2/(4*E_ebeam*E_pbeam*y);
+  return {x, y, Q2};
+}
+
+// sigma method
+std::vector<float> calc_sig_method(float E, float theta, float pt_had, float sigma_h, float E_ebeam, float E_pbeam) {
+  float y = sigma_h/(sigma_h + E*(1 - TMath::Cos(theta))); 
+  float Q2 = E*E*TMath::Sin(theta)*TMath::Sin(theta) / (1-y);
+  float x = Q2/(4*E_ebeam*E_pbeam*y);
+  return {x, y, Q2};
+}
+
+// e-sigma method
+std::vector<float> calc_esig_method(float E, float theta, float pt_had, float sigma_h, float E_ebeam, float E_pbeam) {
+  float Q2  = 2.*E_ebeam*E*(1+TMath::Cos(theta));
+  float x = calc_sig_method(E,theta,pt_had,sigma_h,E_ebeam,E_pbeam)[0];
+  float y = Q2/(4*E_ebeam*E_pbeam*x);
+  return {x, y, Q2};
+}
+'''
+such that they take the basic quantities: the scattered electron energy and angle, the Hadronic Final State transverse momentum and E-pz sum, and the energies of the beam electrons/protons as inputs. We would expect these to give the exact same result as those produced by the InclusiveKinematicsXX branches, assuming that they are implemented the same way. For files in the March 2025 campaign, we see this to be case for all methods - except for the `x` and `y` calculations in the electron method. To understand this better, we can compare what is implemented in our version of the method to the calculations in the [InclusiveKinematicsElectron](https://github.com/eic/EICrecon/blob/main/src/algorithms/reco/InclusiveKinematicsElectron.cc) branch.
+
+Looking at this, we see that the InclusiveKinematicsElectron branch uses four vectors in its calculations, while the manual calculation here uses only the electron energy and angle, and the beam energies. Ordinarily, we would expect these to give equivalent results, if not for the fact that at ePIC there is a 25mrad crossing angle: we may therefore see different results for the Lorentz Invariant four vector based approach compared to the manual calculation, the equations for which are derived assuming head-on collisions.
+
+A challenge for the reader: try implementing your own version of the electron method using four vectors - verify that it matches the output of the InclusiveKinematicsElectron branch. 
