@@ -2,15 +2,21 @@
 title: "Manual Reconstruction"
 teaching: 15
 exercises: 5
-questions:
-- "How do I reconstruct the inclusive kinematics myself?"
-objectives:
-- "Understand how to calculate the inclusive kinematics manually"
-- "Implement the various reconstruction methods in code"
-- "Verify your manual calculations through comparison to the InclusiveKinematicsXX values"
-keypoints:
-- "The reconstruction methods all use some combination of the same basic information: Ee, theta_e, sigma_h, pt_h"
 ---
+
+::::::::::::::::::::::::::::::::::::::::::::: questions
+
+- How do I reconstruct the inclusive kinematics myself?
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::: objectives
+
+- Understand how to calculate the inclusive kinematics manually.
+- Implement the various reconstruction methods in code.
+- Verify your manual calculations through comparison to the InclusiveKinematicsXX values.
+
+:::::::::::::::::::::::::::::::::::::::::::::
 
 ## Doing the reconstruction yourself
 
@@ -18,7 +24,7 @@ It may be that you don't want to use the default reconstruction provided in the 
 
 We can do this by comparing our manual calculations to the results stored in the InclusiveKinematicsXX branches. Copy the script below into a file called `ManualReconstruction.C`
 
-```cpp
+```c++
 // PODIO
 #include "podio/Frame.h"
 #include "podio/ROOTFrameReader.h"
@@ -229,11 +235,11 @@ std::vector<float> calc_esig_method(float E, float theta, float pt_had, float si
 ```
 
 As previously, you can run this script as
-```console
+```bash
 root -l ManualReconstruction.C\(\"your_file.root\"\)
 ```
 This produces plots comparing the manual calculations to the values in the branches as `(branch_calc-manual_calc)/manual_calc`. The manual calculations were coded as
-```cpp
+```c++
 // electron method
 std::vector<float> calc_elec_method(float E, float theta, float pt_had, float sigma_h, float E_ebeam, float E_pbeam) {
   float Q2  = 2.*E_ebeam*E*(1+TMath::Cos(theta));
@@ -276,8 +282,32 @@ std::vector<float> calc_esig_method(float E, float theta, float pt_had, float si
   return {x, y, Q2};
 }
 ```
-such that they take the basic quantities: the scattered electron energy and angle, the Hadronic Final State transverse momentum and E-pz sum, and the energies of the beam electrons/protons as inputs. We would expect these to give the exact same result as those produced by the InclusiveKinematicsXX branches, assuming that they are implemented the same way. For files in the March 2025 campaign, we see this to be case for all methods - except for the `x` and `y` calculations in the electron method. To understand this better, we can compare what is implemented in our version of the method to the calculations in the [InclusiveKinematicsElectron](https://github.com/eic/EICrecon/blob/main/src/algorithms/reco/InclusiveKinematicsElectron.cc) branch.
+such that they take the basic quantities: the scattered electron energy and angle, the Hadronic Final State transverse momentum and E-pz sum, and the energies of the beam electrons/protons as inputs. We would expect these to give the exact same result as those produced by the InclusiveKinematicsXX branches, assuming that they are implemented the same way. For files in the March 2025 campaign, we see this to be case for all methods - except for the `x` and `y` calculations in the electron method. To understand this better, we can compare what is implemented in our version of the method to the calculations in the [InclusiveKinematicsElectron algorithm](https://github.com/eic/EICrecon/blob/main/src/algorithms/reco/InclusiveKinematicsElectron.cc).
 
 Looking at this, we see that the InclusiveKinematicsElectron branch uses four vectors in its calculations, while the manual calculation here uses only the electron energy and angle, and the beam energies. Ordinarily, we would expect these to give equivalent results, if not for the fact that at ePIC there is a 25mrad crossing angle: we may therefore see different results for the Lorentz Invariant four vector based approach compared to the manual calculation, the equations for which are derived assuming head-on collisions.
 
-A challenge for the reader: try implementing your own version of the electron method using four vectors - verify that it matches the output of the InclusiveKinematicsElectron branch. 
+::::::::::::::::::::::::::::::::::::::::::::: challenge
+
+## Exercise
+
+Try implementing your own version of the electron method using four vectors, accounting for the
+25mrad crossing angle. Verify that it matches the output of the InclusiveKinematicsElectron branch.
+
+::::::::::::::: solution
+
+Build the scattered-electron and beam four vectors (as `pni` and `ei` are set up at the top of
+`ManualReconstruction.C`, using the crossing angle) and compute `Q2`, `y`, and `x` from the Lorentz
+invariants (`Q2 = -(ei - scat_ele)^2`, `y = (pni . (ei - scat_ele)) / (pni . ei)`,
+`x = Q2 / (2 pni . (ei - scat_ele))`). Because this treatment includes the crossing angle, the
+`(branch - manual)/manual` distributions for `x` and `y` should now be centred on zero, matching the
+`InclusiveKinematicsElectron` branch, unlike the head-on formula used above.
+
+:::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::: keypoints
+
+- The reconstruction methods all use some combination of the same basic information: Ee, theta_e, sigma_h, pt_h.
+
+:::::::::::::::::::::::::::::::::::::::::::::

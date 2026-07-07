@@ -2,14 +2,20 @@
 title: "Optimise Reconstruction"
 teaching: 15
 exercises: 5
-questions:
-- "How can I improve the reconstruction when using standard methods?"
-objectives:
-- "Compare kinematic resolutions for electron reconstruction based on tracks alone and for tracks+calorimetry"
-- "Use realistic scattered electron ID in the reconstruction"
-keypoints:
-- "Some kinematics may favour a calorimeter based electron energy over a tracking based determination - check which is better for your analysis"
 ---
+
+::::::::::::::::::::::::::::::::::::::::::::: questions
+
+- How can I improve the reconstruction when using standard methods?
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::: objectives
+
+- Compare kinematic resolutions for electron reconstruction based on tracks alone and for tracks+calorimetry.
+- Use realistic scattered electron ID in the reconstruction.
+
+:::::::::::::::::::::::::::::::::::::::::::::
 
 ## Optimising the reconstruction
 
@@ -17,7 +23,7 @@ There are four quantities that are used to reconstruct the inclusive kinematics:
 
 We can investigate this using the script below, which should be copied into a file called `OptimiseReconstruction.C`
 
-```cpp
+```c++
 // PODIO
 #include "podio/Frame.h"
 #include "podio/ROOTFrameReader.h"
@@ -327,25 +333,54 @@ std::vector<float> calc_esig_method(float E, float theta, float pt_had, float si
 ```
 
 This script combines features of the scripts shown in the previous two sections. The plots that are produced when you run
-```console
+```bash
 root -l OptimiseReconstruction.C\(\"your_file.root\"\)
 ```
 show the `(reco-true)/true` distributions as before, with the reconstructed values coming from the manual calculations.
 
 The output of the basic electron-finder implemented in `EICrecon` is found in the `ScatteredElectronsEMinusPz` branch, which is accessed as 
-```cpp
+```c++
 auto& eleCollection = event.get<edm4eic::ReconstructedParticleCollection>("ScatteredElectronsEMinusPz");
 ```
 This returns a list of all particles in `ReconstructedParticles` that have matched tracks and ECAL clusters that pass an `E/p` cut, ordered by momentum. In this code, we take the first element (largest momentum) of the list - be aware that this assumption causes a drop in efficiency larger values of inelasticity.
 
 In this script we compare the quality of the reconstruction methods for two different scenarios: the first where the electron energy is found from the track momentum
-```cpp
+```c++
 E = eleCollection[0].getEnergy();
 ```
 and the second where the electron energy comes from the energy of the associated ECAL cluster
-```cpp
+```c++
 E = eleCollection[0].getClusters()[0].getEnergy();
 ```
 The benchmark plots for these two scenarios are overlaid on the same canvas. For the larger Q2 file, the two scenarios perform similarly (for March 2025 files considered here) but when looking at the low Q2 file, some differences become apparent. As one might expect, the Double Angle and JB methods are unaffected by this change, as they do not use the scattered electron energy in their calculation. However, the electron method, and to a lesser extent the Sigma methods see an improvement when using the energy value from the ECAL. The takeaway here is to check which approach gives you a better resolution for your analysis - at low Q2 it's generally better to rely on the calorimeters, as tracking momentum resolutions are worse at shallow angles.
 
-There are many ways in which the reconstruction of the hadronic final state, which has not been discussed much in this tutorial, could be improved. The reader is invited to look through the [current HFS reconstruction code](https://github.com/eic/EICrecon/blob/main/src/algorithms/reco/HadronicFinalState.cc), which constructs the HFS as the sum of particles in the `ReconstructedParticles` branch, excluding the scattered electron. Note that this code uses boosts to correct for the crossing angle at ePIC - this is something to keep in mind if you are reconstructing the HFS manually, as it strongly impacts the HFS inputs to the reconstruction methods (Pt and E-pz sum). Regardless of the difficulties, it is highly recommended to try your own HFS reconstruction, as there are many improvements to be offered by e.g. particle flow algorithms, or kinematic fitting of exclusive final states, that will hopefully be the subject of a future tutorial.
+There are many ways in which the reconstruction of the hadronic final state, which has not been discussed much in this tutorial, could be improved. The reader is invited to look through the [current HFS reconstruction code](https://github.com/eic/EICrecon/blob/main/src/algorithms/reco/HadronicFinalState.cc), which constructs the HFS as the sum of particles in the `ReconstructedParticles` branch, excluding the scattered electron. Note that this code uses boosts to correct for the crossing angle at ePIC - this is something to keep in mind if you are reconstructing the HFS manually, as it strongly impacts the HFS inputs to the reconstruction methods (Pt and E-pz sum).
+
+::::::::::::::::::::::::::::::::::::::::::::: challenge
+
+## Exercise
+
+Try your own reconstruction of the hadronic final state, for example using a particle-flow
+algorithm or kinematic fitting of exclusive final states, and compare the resulting resolutions to
+the default HFS reconstruction. Remember to correct for the 25mrad crossing angle.
+
+::::::::::::::: solution
+
+There is no single canonical answer - this is an open-ended, research-level exercise. A reasonable
+starting point is to reproduce the default HFS (the momentum sum of `ReconstructedParticles`
+excluding the scattered electron, boosted to correct for the crossing angle as in the
+[HadronicFinalState code](https://github.com/eic/EICrecon/blob/main/src/algorithms/reco/HadronicFinalState.cc))
+and then swap in your own particle selection. Feed the resulting `pt_had` and `sigma_h` into the
+`calc_jb_method`/`calc_da_method`/`calc_sig_method` functions and check whether the
+`(reco-true)/true` resolutions improve. Improvements from particle flow or exclusive kinematic
+fitting will hopefully be the subject of a future tutorial.
+
+:::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::: keypoints
+
+- Some kinematics may favour a calorimeter based electron energy over a tracking based determination - check which is better for your analysis.
+
+:::::::::::::::::::::::::::::::::::::::::::::

@@ -1,36 +1,36 @@
 # EIC Tutorial: Kinematic Reconstruction
 
-[![Create a Slack Account with us](https://img.shields.io/badge/Create_Slack_Account-The_Carpentries-071159.svg)](https://swc-slack-invite.herokuapp.com/)
+[![The Carpentries Workbench](https://img.shields.io/badge/Built%20with-The%20Carpentries%20Workbench-071159.svg)](https://carpentries.github.io/sandpaper-docs/)
 
-This repository generates the corresponding lesson website from [The Carpentries](https://carpentries.org/) repertoire of lessons. 
+An ePIC tutorial on kinematic reconstruction: how to access the reconstructed inclusive kinematics
+in the ePIC simulation output, benchmark the performance of the different reconstruction methods,
+and implement and optimise the reconstruction yourself.
+
+This lesson is built with [The Carpentries Workbench](https://carpentries.github.io/sandpaper-docs/).
+
+## Building the lesson locally
+
+The lesson is rendered with the Workbench Docker image (no local R installation needed). A
+`Makefile` wraps the commands:
+
+```bash
+make preview   # build the site into site/docs/
+make serve     # serve site/docs/ at http://localhost:4321
+make clean     # drop the build cache
+```
 
 ## Contributing
 
-We welcome all contributions to improve the lesson! Maintainers will do their best to help you if you have any
-questions, concerns, or experience any difficulties along the way.
-
-We'd like to ask you to familiarize yourself with our [Contribution Guide](CONTRIBUTING.md) and have a look at
-the [more detailed guidelines][lesson-example] on proper formatting, ways to render the lesson locally, and even
-how to write new episodes.
-
-Please see the current list of [issues][FIXME] for ideas for contributing to this
-repository. For making your contribution, we use the GitHub flow, which is
-nicely explained in the chapter [Contributing to a Project](http://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project) in Pro Git
-by Scott Chacon.
-Look for the tag ![good_first_issue](https://img.shields.io/badge/-good%20first%20issue-gold.svg). This indicates that the maintainers will welcome a pull request fixing this issue.  
+We welcome all contributions to improve the lesson! Please familiarize yourself with our
+[Contribution Guide](CONTRIBUTING.md). For the Workbench Markdown syntax (callouts, challenges,
+etc.) see the [sandpaper documentation](https://carpentries.github.io/sandpaper-docs/).
 
 ## Maintainer(s)
 
-Current maintainers of this lesson are 
+Current maintainers of this lesson are
 
-* Stephen Maple, @maples, s.maple@bham.ac.uk
-
-## Authors
-
-A list of contributors to the lesson can be found in [AUTHORS](AUTHORS)
+* Stephen Kay, stephen.kay@york.ac.uk
 
 ## Citation
 
-To cite this lesson, please consult with [CITATION](CITATION)
-
-[lesson-example]: https://carpentries.github.io/lesson-example
+To cite this lesson, please consult the [CITATION.cff](CITATION.cff) file.

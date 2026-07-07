@@ -2,32 +2,38 @@
 title: "Performance Benchmarks"
 teaching: 15
 exercises: 5
-questions:
-- "How do I determine which reconstruction method I should be using?"
-objectives:
-- "Produce plots that benchmark the performance of different reconstruction methods"
-keypoints:
-- "Use `ROOTFrameReader` to process simulation files using the data types implemented in `edm4hep`/`edm4eic`."
 ---
+
+::::::::::::::::::::::::::::::::::::::::::::: questions
+
+- How do I determine which reconstruction method I should be using?
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::: objectives
+
+- Produce plots that benchmark the performance of different reconstruction methods.
+
+:::::::::::::::::::::::::::::::::::::::::::::
 
 ## Using ROOTFrameReader to process simulation files
 
-The collections contained in the simulation output often rely on data types made available by `edm4hep` and `edm4eic`. These are based on the podio EDM toolkit, which provides its own tools for reading in event data, though approaches using e.g. `TTreeReader` or `RDataFrame` are also possible. The data model contains functions that can make key information more accessible. Take the `edm4eic:ReconstructedParticle` type (see [here](https://eic.github.io/EDM4eic/classedm4eic_1_1_reconstructed_particle.html)) as an example:
+The collections contained in the simulation output often rely on data types made available by `edm4hep` and `edm4eic`. These are based on the podio EDM toolkit, which provides its own tools for reading in event data, though approaches using e.g. `TTreeReader` or `RDataFrame` are also possible. The data model contains functions that can make key information more accessible. Take the `edm4eic:ReconstructedParticle` type (see the [edm4eic::ReconstructedParticle reference](https://eic.github.io/EDM4eic/classedm4eic_1_1_reconstructed_particle.html)) as an example:
 
 Go into a ROOT prompt (`root -l`) and create an `edm4eic::ReconstructedParticle` object
-```cpp
+```c++
 #include <edm4eic/ReconstructedParticleCollection.h>
 edm4eic::ReconstructedParticle rcp
 ```
 For such an object you can access the tracks or clusters associated with the reconstructed particle as
-```cpp
+```c++
 rcp.getTracks()
 rcp.getClusters()
 ```
 which would return a list of the associated tracks/clusters. As our `rcp` was just initialised, the lists are empty - for the objects in the simulation output this won't be the case.
 
 If you're not using data frames, you probably do your analysis in an event loop. An event loop with the `ROOTFrameReader` would look somthing like this
-```cpp
+```c++
 #include "podio/Frame.h"
 #include "podio/ROOTFrameReader.h"
 #include "edm4eic/ReconstructedParticleCollection.h"
@@ -43,7 +49,7 @@ for (size_t i = 0; i < reader.getEntries("events"); i++) {
 ```
 
 Below is a full script to produce some resolution benchmark plots using the `InclusiveKinematicsXX` branches - copy it into a file called `BenchmarkReconstruction.C`
-```cpp
+```c++
 // PODIO
 #include "podio/Frame.h"
 #include "podio/ROOTFrameReader.h"
@@ -270,18 +276,18 @@ void BenchmarkReconstruction(std::string filename, bool bin_log=false) {
 This script sets up the benchmark histograms, fills them in the event loop, and then draws them. Here, the resolutions on the reconstructed kinematic variables are chosen as the benchmarks, both the 1-dimensional `(reco-true)/true` distribution, and also 2-dimensional plots vs inelasticity, y. For a good reconstruction method, the `(reco-true)/true` distribution is centred on zero, with small fluctuations.
 
 Run this script as 
-```console
+```bash
 root -l BenchmarkReconstruction.C\(\"your_file.root\"\)
 ```
 or as
-```console
+```bash
 root -l BenchmarkReconstruction.C\(\"your_file.root\",true\)
 ```
 to bin logarithmically in inelasticity. 
 
 You may wish to investigate how the resolutions change in a scenario more relevant to your analysis. A set of example cuts are provided in the script
 
-```console
+```c++
 // Some example cuts
 bool cuts = true;
 cuts = cuts && (y_truth < 0.95);
@@ -289,3 +295,28 @@ cuts = cuts && (y_truth > 0.01);
 cuts = cuts && (Q2_truth > 1);
 ```
 These can be replaced with whatever cuts are used in your analysis, or you could use them to select areas of the phase space that you wish to investigate.
+
+::::::::::::::::::::::::::::::::::::::::::::: challenge
+
+## Exercise
+
+Modify the example cuts in `BenchmarkReconstruction.C` to isolate a region of phase space relevant
+to your analysis (for example a high-inelasticity or high-Q2 selection) and re-run the benchmark.
+Which reconstruction method gives the narrowest `(reco-true)/true` resolution in that region?
+
+::::::::::::::: solution
+
+There is no single correct answer - it depends on the region you select. In general the electron
+method performs best at high inelasticity `y`, while the JB and Double Angle methods do better at
+low `y`. The point of the exercise is to see that the "best" method is region-dependent, so you
+should benchmark the methods in the region relevant to your own analysis.
+
+:::::::::::::::
+
+:::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::: keypoints
+
+- Use `ROOTFrameReader` to process simulation files using the data types implemented in `edm4hep`/`edm4eic`.
+
+:::::::::::::::::::::::::::::::::::::::::::::
