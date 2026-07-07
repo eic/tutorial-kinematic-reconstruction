@@ -27,7 +27,7 @@ We can do this by comparing our manual calculations to the results stored in the
 ```c++
 // PODIO
 #include "podio/Frame.h"
-#include "podio/ROOTFrameReader.h"
+#include "podio/Reader.h"
 
 // DATA MODEL
 #include "edm4eic/InclusiveKinematicsCollection.h"
@@ -55,8 +55,7 @@ void ManualReconstruction(std::string filename) {
 
   std::vector<std::string> inFiles = {filename};
 
-  auto reader = podio::ROOTFrameReader();
-  reader.openFiles(inFiles);
+  auto reader = podio::makeReader(inFiles);
 
   // Declare benchmark histograms
   TH1F *hResoX_electron = new TH1F("hResoX_electron","Electron method;#Deltax/x;Counts",500,-1,1);
@@ -84,7 +83,7 @@ void ManualReconstruction(std::string filename) {
 
   cout << reader.getEntries("events") << " events found" << endl;
   for (size_t i = 0; i < reader.getEntries("events"); i++) {// begin event loop
-    const auto event = podio::Frame(reader.readNextEntry("events"));
+    const auto event = reader.readNextFrame("events");
     if (i%100==0) cout << i << " events processed" << endl;
 
     // Retrieve Inclusive Kinematics Collections

@@ -16,7 +16,7 @@ exercises: 5
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
-## Using ROOTFrameReader to process simulation files
+## Using the podio Reader to process simulation files
 
 The collections contained in the simulation output often rely on data types made available by `edm4hep` and `edm4eic`. These are based on the podio EDM toolkit, which provides its own tools for reading in event data, though approaches using e.g. `TTreeReader` or `RDataFrame` are also possible. The data model contains functions that can make key information more accessible. Take the `edm4eic:ReconstructedParticle` type (see the [edm4eic::ReconstructedParticle reference](https://eic.github.io/EDM4eic/classedm4eic_1_1_reconstructed_particle.html)) as an example:
 
@@ -32,17 +32,16 @@ rcp.getClusters()
 ```
 which would return a list of the associated tracks/clusters. As our `rcp` was just initialised, the lists are empty - for the objects in the simulation output this won't be the case.
 
-If you're not using data frames, you probably do your analysis in an event loop. An event loop with the `ROOTFrameReader` would look somthing like this
+If you're not using data frames, you probably do your analysis in an event loop. An event loop with the podio `Reader` would look somthing like this
 ```c++
 #include "podio/Frame.h"
-#include "podio/ROOTFrameReader.h"
+#include "podio/Reader.h"
 #include "edm4eic/ReconstructedParticleCollection.h"
 
-auto reader = podio::ROOTFrameReader();
-reader.openFile("some_file.root");
+auto reader = podio::makeReader("some_file.root");
 
 for (size_t i = 0; i < reader.getEntries("events"); i++) {
-    const auto event = podio::Frame(reader.readNextEntry("events"));
+    const auto event = reader.readNextFrame("events");
     auto& reco_collection = event.get<edm4eic::ReconstructedParticleCollection>("ReconstructedParticles");	
     // Your analysis here
 }
@@ -52,7 +51,7 @@ Below is a full script to produce some resolution benchmark plots using the `Inc
 ```c++
 // PODIO
 #include "podio/Frame.h"
-#include "podio/ROOTFrameReader.h"
+#include "podio/Reader.h"
 
 // DATA MODEL
 #include "edm4eic/InclusiveKinematicsCollection.h"
@@ -77,10 +76,7 @@ void BinLogX(T *h)
 
 void BenchmarkReconstruction(std::string filename, bool bin_log=false) {
 
-  std::vector<std::string> inFiles = {filename};
-
-  auto reader = podio::ROOTFrameReader();
-  reader.openFiles(inFiles);
+  auto reader = podio::makeReader(filename);
 
   // Declare benchmark histograms
   TH1F *hResoX_electron = new TH1F("hResoX_electron","Electron method;#Deltax/x;Counts",100,-1,1);
@@ -146,7 +142,7 @@ void BenchmarkReconstruction(std::string filename, bool bin_log=false) {
 
   cout << reader.getEntries("events") << " events found" << endl;
   for (size_t i = 0; i < reader.getEntries("events"); i++) {// begin event loop
-    const auto event = podio::Frame(reader.readNextEntry("events"));
+    const auto event = reader.readNextFrame("events");
     if (i%100==0) cout << i << " events processed" << endl;
 
     // Retrieve Inclusive Kinematics Collections
@@ -317,6 +313,6 @@ should benchmark the methods in the region relevant to your own analysis.
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
-- Use `ROOTFrameReader` to process simulation files using the data types implemented in `edm4hep`/`edm4eic`.
+- Use the podio `Reader` (`podio::makeReader`) to process simulation files using the data types implemented in `edm4hep`/`edm4eic`.
 
 :::::::::::::::::::::::::::::::::::::::::::::

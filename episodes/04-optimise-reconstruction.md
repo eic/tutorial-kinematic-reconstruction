@@ -26,7 +26,7 @@ We can investigate this using the script below, which should be copied into a fi
 ```c++
 // PODIO
 #include "podio/Frame.h"
-#include "podio/ROOTFrameReader.h"
+#include "podio/Reader.h"
 
 // DATA MODEL
 #include "edm4eic/InclusiveKinematicsCollection.h"
@@ -53,8 +53,7 @@ void OptimiseReconstruction(std::string filename) {
 
   std::vector<std::string> inFiles = {filename};
 
-  auto reader = podio::ROOTFrameReader();
-  reader.openFiles(inFiles);
+  auto reader = podio::makeReader(inFiles);
 
   // Declare benchmark histograms
   TH1F *hResoX_electron = new TH1F("hResoX_electron","Electron method;#Deltax/x;Counts",100,-1,1);
@@ -100,7 +99,7 @@ void OptimiseReconstruction(std::string filename) {
 
   cout << reader.getEntries("events") << " events found" << endl;
   for (size_t i = 0; i < reader.getEntries("events"); i++) {// begin event loop
-    const auto event = podio::Frame(reader.readNextEntry("events"));
+    const auto event = reader.readNextFrame("events");
     if (i%100==0) cout << i << " events processed" << endl;
 
     // Retrieve Inclusive Kinematics Collections
@@ -114,8 +113,6 @@ void OptimiseReconstruction(std::string filename) {
     // Retrieve Scattered electron and HFS
     auto& eleCollection = event.get<edm4eic::ReconstructedParticleCollection>("ScatteredElectronsEMinusPz");
     auto& hfsCollection = event.get<edm4eic::HadronicFinalStateCollection>("HadronicFinalState");
-
-    auto& ecalClusters = event.get<edm4eic::ClusterCollection>("EcalClusters");
 
     // Store kinematics from InclusiveKinematics branches
     if (kin_truth.empty() || kin_electron.empty() || kin_jb.empty()) continue;
