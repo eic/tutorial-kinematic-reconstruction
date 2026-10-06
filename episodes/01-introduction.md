@@ -20,35 +20,26 @@ exercises: 5
 More detailed instructions on streaming and downloading simulation files can be found in the
 [Analysis Tutorial](https://eic.github.io/tutorial-analysis/).
 
-## Access Simulation from Jefferson Lab xrootd
+## Find Simulation Files with Rucio
 
-The preferred method for browsing the simulation output is to use xrootd from within the eic-shell. To browse the directory structure and exit, one can run the commands:
+The preferred method for browsing the simulation output is to use [Rucio](https://eic.github.io/tutorial-file-access/) from within the eic-shell. To list the datasets and the files in one of them, one can run the commands:
 ```bash
-./eic-shell
-xrdfs root://dtn2304.jlab.org:8443
-ls /jlab-osdf-ro/eic/EPIC/volatile/RECO/
-exit
+rucio did list --short 'epic:/RECO/26.04.1/epic_craterlake/DIS/NC/18x275/*'
+rucio did content list --short epic:/RECO/26.04.1/epic_craterlake/DIS/NC/18x275/minQ2=1
 ```
 Once you've located your desired file, you can copy it to your local system using the `xrdcp` command:
 ```bash
-xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/path-to-file ./
+xrdcp $(rucio replica list file --protocols root --pfns --rses isopenaccess epic:/RECO/path-to-file | head -1) ./
 ```
-
-::::::::::::::::::::::::::::::::::::::::::::: callout
-
-Note: For simulation campaigns before January 2025, the destination is `/jlab-osdf-ro/eic/EPIC/work` rather than
-`/jlab-osdf-ro/eic/EPIC/volatile`.
-
-:::::::::::::::::::::::::::::::::::::::::::::
 
 ## Download files for the next step!
 
-Let's start by downloading our files. We will look at two different files from the `26.03.0` reconstruction campaign: a low Q2 and a high Q2 Neutral Current DIS file.
+Let's start by downloading our files. We will look at two different files from the `26.04.1` reconstruction campaign: a low Q2 and a high Q2 Neutral Current DIS file.
 
 From within the current `eic-shell` we can grab our files using -
 ```bash
-xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/26.03.0/epic_craterlake/DIS/NC/18x275/minQ2=1/pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root ./
-xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/26.03.0/epic_craterlake/DIS/NC/18x275/minQ2=100/pythia8NCDIS_18x275_minQ2=100_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root ./
+xrdcp $(rucio replica list file --protocols root --pfns --rses isopenaccess epic:/RECO/26.04.1/epic_craterlake/DIS/NC/18x275/minQ2=1/pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root | head -1) ./
+xrdcp $(rucio replica list file --protocols root --pfns --rses isopenaccess epic:/RECO/26.04.1/epic_craterlake/DIS/NC/18x275/minQ2=1000/pythia8NCDIS_18x275_minQ2=1000_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root | head -1) ./
 ```
 Note that the ./ at the end is the target location to copy to. Change this as desired.
 
@@ -126,7 +117,7 @@ performs in different regions of phase space, which is explored in the following
 
 ::::::::::::::::::::::::::::::::::::::::::::: keypoints
 
-- Use `xrdfs` from within the eic-shell to browse available files from simulations campaigns.
+- Use Rucio from within the eic-shell to find files from simulations campaigns.
 - Use `xrdcp` from within eic-shell to copy files to your local environment.
 - Access the reconstructed kinematics using the `InclusiveKinematicsXX` branches.
 
