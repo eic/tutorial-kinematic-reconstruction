@@ -25,30 +25,30 @@ More detailed instructions on streaming and downloading simulation files can be 
 The preferred method for browsing the simulation output is to use xrootd from within the eic-shell. To browse the directory structure and exit, one can run the commands:
 ```bash
 ./eic-shell
-xrdfs root://dtn-eic.jlab.org
-ls /volatile/eic/EPIC/RECO/
+xrdfs root://dtn2304.jlab.org:8443
+ls /jlab-osdf-ro/eic/EPIC/volatile/RECO/
 exit
 ```
 Once you've located your desired file, you can copy it to your local system using the `xrdcp` command:
 ```bash
-xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/path-to-file ./
+xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/path-to-file ./
 ```
 
 ::::::::::::::::::::::::::::::::::::::::::::: callout
 
-Note: For simulation campaigns before January 2025, the destination is `/work/eic2/EPIC` rather than
-`/volatile/eic/EPIC`.
+Note: For simulation campaigns before January 2025, the destination is `/jlab-osdf-ro/eic/EPIC/work` rather than
+`/jlab-osdf-ro/eic/EPIC/volatile`.
 
 :::::::::::::::::::::::::::::::::::::::::::::
 
 ## Download files for the next step!
 
-Let's start by downloading our files. We will look at two different files from the `26.02.0` reconstruction campaign: a low Q2 and a high Q2 Neutral Current DIS file.
+Let's start by downloading our files. We will look at two different files from the `26.03.0` reconstruction campaign: a low Q2 and a high Q2 Neutral Current DIS file.
 
 From within the current `eic-shell` we can grab our files using -
 ```bash
-xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/26.02.0/epic_craterlake/DIS/NC/18x275/minQ2=1/pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root ./
-xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/26.02.0/epic_craterlake/DIS/NC/18x275/minQ2=1000/pythia8NCDIS_18x275_minQ2=1000_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root ./
+xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/26.03.0/epic_craterlake/DIS/NC/18x275/minQ2=1/pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root ./
+xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/26.03.0/epic_craterlake/DIS/NC/18x275/minQ2=100/pythia8NCDIS_18x275_minQ2=100_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root ./
 ```
 Note that the ./ at the end is the target location to copy to. Change this as desired.
 
