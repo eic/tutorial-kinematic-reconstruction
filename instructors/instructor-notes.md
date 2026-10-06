@@ -13,7 +13,7 @@ working `eic-shell` and be comfortable opening ROOT files.
   networks.
 - The tutorial uses the current `eic-shell` together with files from the `26.02.0` reconstruction
   campaign. Simulation campaigns are periodically purged, so before running the session check that
-  the `xrdcp` paths in episode 1 still resolve (`xrdfs root://dtn-eic.jlab.org ls ...`) and repoint
+  the `xrdcp` paths in episode 1 still resolve (`xrdfs root://dtn2304.jlab.org:8443 ls ...`) and repoint
   to a live campaign if needed (see the repository `MIGRATION.md`).
 
 ## Timing
