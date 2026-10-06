@@ -43,12 +43,12 @@ Note: For simulation campaigns before January 2025, the destination is `/jlab-os
 
 ## Download files for the next step!
 
-Let's start by downloading our files. We will look at two different files from the `26.02.0` reconstruction campaign: a low Q2 and a high Q2 Neutral Current DIS file.
+Let's start by downloading our files. We will look at two different files from the `26.03.0` reconstruction campaign: a low Q2 and a high Q2 Neutral Current DIS file.
 
 From within the current `eic-shell` we can grab our files using -
 ```bash
-xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/26.02.0/epic_craterlake/DIS/NC/18x275/minQ2=1/pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root ./
-xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/26.02.0/epic_craterlake/DIS/NC/18x275/minQ2=1000/pythia8NCDIS_18x275_minQ2=1000_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root ./
+xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/26.03.0/epic_craterlake/DIS/NC/18x275/minQ2=1/pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root ./
+xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/26.03.0/epic_craterlake/DIS/NC/18x275/minQ2=100/pythia8NCDIS_18x275_minQ2=100_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root ./
 ```
 Note that the ./ at the end is the target location to copy to. Change this as desired.
 

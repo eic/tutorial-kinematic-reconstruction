@@ -11,7 +11,7 @@ working `eic-shell` and be comfortable opening ROOT files.
 - Ask learners to complete the [Setup](../learners/setup.md) page in advance, including downloading
   at least one of the simulation files with `xrdcp`, since the download can be slow on some
   networks.
-- The tutorial uses the current `eic-shell` together with files from the `26.02.0` reconstruction
+- The tutorial uses the current `eic-shell` together with files from the `26.03.0` reconstruction
   campaign. Simulation campaigns are periodically purged, so before running the session check that
   the `xrdcp` paths in episode 1 still resolve (`xrdfs root://dtn2304.jlab.org:8443 ls ...`) and repoint
   to a live campaign if needed (see the repository `MIGRATION.md`).
