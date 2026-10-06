@@ -24,7 +24,7 @@ It may be that you don't want to use the default reconstruction provided in the 
 
 We can do this by comparing our manual calculations to the results stored in the InclusiveKinematicsXX branches. Copy the script below into a file called `ManualReconstruction.C`
 
-```c++
+```{.cpp .ci file="ManualReconstruction.C"}
 // PODIO
 #include "podio/Frame.h"
 #include "podio/Reader.h"
@@ -236,6 +236,10 @@ std::vector<float> calc_esig_method(float E, float theta, float pt_had, float si
 As previously, you can run this script as
 ```bash
 root -l ManualReconstruction.C\(\"your_file.root\"\)
+```
+For example, for the low Q2 file:
+```{.bash .ci}
+root -l -b -q 'ManualReconstruction.C("pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root")'
 ```
 This produces plots comparing the manual calculations to the values in the branches as `(branch_calc-manual_calc)/manual_calc`. The manual calculations were coded as
 ```c++

@@ -37,7 +37,7 @@ xrdcp $(rucio replica list file --protocols root --pfns --rses isopenaccess epic
 Let's start by downloading our files. We will look at two different files from the `26.04.1` reconstruction campaign: a low Q2 and a high Q2 Neutral Current DIS file.
 
 From within the current `eic-shell` we can grab our files using -
-```bash
+```{.bash .ci}
 xrdcp $(rucio replica list file --protocols root --pfns --rses isopenaccess epic:/RECO/26.04.1/epic_craterlake/DIS/NC/18x275/minQ2=1/pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root | head -1) ./
 xrdcp $(rucio replica list file --protocols root --pfns --rses isopenaccess epic:/RECO/26.04.1/epic_craterlake/DIS/NC/18x275/minQ2=1000/pythia8NCDIS_18x275_minQ2=1000_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root | head -1) ./
 ```
@@ -54,7 +54,7 @@ TBrowser b
 ```
 
 It may be inconvenient to do everything through the `TBrowser` if you want to compare the distributions, look at multiple files, or to save the histograms. Using your preferred text editor, create a file with the name `PlotDistributions.C`, and paste the following code:
-```c++
+```{.cpp .ci file="PlotDistributions.C"}
 void PlotDistributions(TString filename){
   
   std::vector<TString> recon_method = {"Truth", "Electron", "JB", "DA", "Sigma", "ESigma"};
@@ -90,7 +90,7 @@ void PlotDistributions(TString filename){
 }
 ```
 You can then run this script as
-```bash
+```{.bash .ci}
 root -l PlotDistributions.C\(\"pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root\"\)
 ```
 replacing the file name with the name of the file that you want to plot.

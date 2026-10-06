@@ -23,7 +23,7 @@ There are four quantities that are used to reconstruct the inclusive kinematics:
 
 We can investigate this using the script below, which should be copied into a file called `OptimiseReconstruction.C`
 
-```c++
+```{.cpp .ci file="OptimiseReconstruction.C"}
 // PODIO
 #include "podio/Frame.h"
 #include "podio/Reader.h"
@@ -334,6 +334,11 @@ This script combines features of the scripts shown in the previous two sections.
 root -l OptimiseReconstruction.C\(\"your_file.root\"\)
 ```
 show the `(reco-true)/true` distributions as before, with the reconstructed values coming from the manual calculations.
+For example, for the low and high Q2 files:
+```{.bash .ci}
+root -l -b -q 'OptimiseReconstruction.C("pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root")'
+root -l -b -q 'OptimiseReconstruction.C("pythia8NCDIS_18x275_minQ2=1000_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root")'
+```
 
 The output of the basic electron-finder implemented in `EICrecon` is found in the `ScatteredElectronsEMinusPz` branch, which is accessed as 
 ```c++
