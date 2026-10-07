@@ -48,7 +48,7 @@ for (size_t i = 0; i < reader.getEntries("events"); i++) {
 ```
 
 Below is a full script to produce some resolution benchmark plots using the `InclusiveKinematicsXX` branches - copy it into a file called `BenchmarkReconstruction.C`
-```c++
+```{.cpp .ci file="BenchmarkReconstruction.C"}
 // PODIO
 #include "podio/Frame.h"
 #include "podio/Reader.h"
@@ -280,6 +280,10 @@ or as
 root -l BenchmarkReconstruction.C\(\"your_file.root\",true\)
 ```
 to bin logarithmically in inelasticity. 
+For example, for the low Q2 file:
+```{.bash .ci}
+root -l -b -q 'BenchmarkReconstruction.C("pythia8NCDIS_18x275_minQ2=1_beamEffects_xAngle=-0.025_hiDiv_1.0001.eicrecon.edm4eic.root", true)'
+```
 
 You may wish to investigate how the resolutions change in a scenario more relevant to your analysis. A set of example cuts are provided in the script
 
